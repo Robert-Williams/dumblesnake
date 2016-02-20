@@ -28,7 +28,7 @@ router.post(config.routes.start, function (req, res) {
 // Handle POST request to '/move'
 router.post(config.routes.move, function (req, res) {
   // Do something here to generate your move
-  console.dir(req.body);
+  console.dir(req.body, {depth: null});
 
   // Response data
   var data = {
