@@ -1,7 +1,13 @@
 var config  = require('../config.json');
 var express = require('express');
 var router  = express.Router();
-
+var createMap = require('../lib/createMap');
+var determineAttitude = require('../lib/determineAttitude');
+var objective = require('../lib/objective');
+var pickDirection = require('../lib/pickDirection');
+var findPath = ('../lib/findPath');
+var pickTaunt = require('../lib/pickTanut');
+var async = require('async');
 // Handle GET request to '/'
 router.get(config.routes.info, function (req, res) {
   // Response data
@@ -30,13 +36,25 @@ router.post(config.routes.move, function (req, res) {
   // Do something here to generate your move
   console.dir(req.body, {depth: null});
 
-  // Response data
-  var data = {
-    move: 'north', // one of: ["north", "east", "south", "west"]
-    taunt: config.snake.taunt.move
-  };
+  //
+  //Do All Stuff!!!!!!!!!!!!!!!
+  //
+  
+  async.auto({
+      createMap: createMap(),
+      objective: objective(),
+      determineAttitude: determineAttitude(),
+      pathfinder:['createMap', 'objective', 'determineAttitude', findPath()],
+      pickDirection: ['pathfinder', pickDirection()]
+  }, function(err, results){
+     // Response data
+    var data = {
+        move: 'north', // one of: ["north", "east", "south", "west"]
+        taunt: config.snake.taunt.move
+    };
 
-  return res.json(data);
+    return res.json(data); 
+  });
 });
 
 // Handle POST request to '/end'
