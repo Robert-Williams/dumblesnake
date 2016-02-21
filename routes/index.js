@@ -6,8 +6,8 @@ var determineAttitude = require('../lib/determineAttitude');
 var objective = require('../lib/objective');
 var pickDirection = require('../lib/pickDirection');
 var findPath = ('../lib/findPath');
-var pickTaunt = require('../lib/pickTanut');
-var pickTarget = require('..lib/pickTarget');
+var pickTaunt = require('../lib/pickTaunt');
+var pickTarget = require('../lib/pickTarget');
 var async = require('async');
 // Handle GET request to '/'
 router.get(config.routes.info, function (req, res) {
