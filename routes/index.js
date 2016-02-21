@@ -7,6 +7,7 @@ var objective = require('../lib/objective');
 var pickDirection = require('../lib/pickDirection');
 var findPath = ('../lib/findPath');
 var pickTaunt = require('../lib/pickTanut');
+var pickTarget = require('..lib/pickTarget');
 var async = require('async');
 // Handle GET request to '/'
 router.get(config.routes.info, function (req, res) {
@@ -41,16 +42,17 @@ router.post(config.routes.move, function (req, res) {
   //
   
   async.auto({
-      createMap: createMap(),
-      objective: objective(),
-      determineAttitude: determineAttitude(),
-      pathfinder:['createMap', 'objective', 'determineAttitude', findPath()],
-      pickDirection: ['pathfinder', pickDirection()]
+      createMap: createMap(callback),
+      objective: objective(callback),
+      determineAttitude: determineAttitude(callback),
+      pathTarget:['createMap', 'objective', 'determineAttitude', pickTarget(callback, results)],
+      findPath: ['pathTarget', findPath(callback, results)],
+      pickDirection: ['pickTarget', pickDirection(callback, results)]
   }, function(err, results){
      // Response data
     var data = {
-        move: 'north', // one of: ["north", "east", "south", "west"]
-        taunt: config.snake.taunt.move
+        move: results.pickDirection, // one of: ["north", "east", "south", "west"]
+        taunt: pickTaunt()
     };
 
     return res.json(data); 
